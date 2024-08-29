@@ -1,11 +1,12 @@
-import bcrypt from 'bcrypt'
-import NextAuth from 'next-auth/next'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import bcrypt from 'bcrypt';
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
-import prisma from "@/libs/prismadb"
+import prisma from '@/libs/prismadb';
 
-export default NextAuth({
+// Define the authOptions object
+export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
@@ -16,17 +17,17 @@ export default NextAuth({
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error('Invalid credentials')
+                    throw new Error('Invalid credentials');
                 }
 
                 const user = await prisma.user.findUnique({
                     where: {
-                        email: credentials.email
-                    }
+                        email: credentials.email,
+                    },
                 });
 
-                if (!user || !user?.hashedPassword) {
-                    throw new Error('Invalid credentials')
+                if (!user || !user.hashedPassword) {
+                    throw new Error('Invalid credentials');
                 }
 
                 const isCorrectPassword = await bcrypt.compare(
@@ -35,19 +36,22 @@ export default NextAuth({
                 );
 
                 if (!isCorrectPassword) {
-                    throw new Error('Invalid credentials')
+                    throw new Error('Invalid credentials');
                 }
 
                 return user;
-            }
-        })
+            },
+        }),
     ],
     debug: process.env.NODE_ENV === 'development',
     session: {
-        strategy: 'jwt'
+        strategy: 'jwt',
     },
     jwt: {
         secret: process.env.NEXTAUTH_JWT_SECRET,
     },
-    secret: process.env.NEXTAUTH_SECRET
-})
+    secret: process.env.NEXTAUTH_SECRET,
+};
+
+// Export NextAuth using authOptions
+export default NextAuth(authOptions);

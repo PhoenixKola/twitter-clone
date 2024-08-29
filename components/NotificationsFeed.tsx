@@ -5,11 +5,11 @@ import { BsTwitter } from "react-icons/bs";
 
 const NotificationsFeed = () => {
     const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
-    const { data: fetchedNotifications = [] } = useNotifications(currentUser.id);
+    const { data: fetchedNotifications = [] } = useNotifications(currentUser?.id);
 
     useEffect(() => {
         mutateCurrentUser();
-    }, [mutateCurrentUser])
+    }, [mutateCurrentUser, fetchedNotifications])
 
     if (fetchedNotifications.length === 0) {
         return (

@@ -25,7 +25,7 @@ const PostItem: React.FC<PostItemProps> = ({ userId, data }) => {
     }, [router, data.user.id]);
 
     const goToPost = useCallback(() => {
-        router.push(`/post/${data.id}`);
+        router.push(`/posts/${data.id}`);
     }, [router, data.id]);
     
     const onLike = useCallback((event: any) => {
@@ -66,22 +66,25 @@ const PostItem: React.FC<PostItemProps> = ({ userId, data }) => {
                     <div className="text-white mt-1">
                         {data.body}
                     </div>
-                    <div className="flex flex-row items-center mt-3 gap-10">
-                        <div className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500">
-                            <AiOutlineMessage size={20} />
-                            <p>
-                                {data.comments?.length || 0}
-                            </p>
+                    <div className="flex gap-4 items-center">
+                        <div className="flex flex-row items-center mt-3 gap-10">
+                            <div className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500">
+                                <AiOutlineMessage size={20} />
+                                <p>
+                                    {data.comments?.length || 0}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex flex-row items-center mt-3 gap-10">
+                            <div onClick={onLike} className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500">
+                                <LikeIcon size={20} color={hasLiked ? 'red' : ''}/>
+                                <p>
+                                    {data.likedIds?.length}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex flex-row items-center mt-3 gap-10">
-                        <div onClick={onLike} className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500">
-                            <LikeIcon size={20} color={hasLiked ? 'red' : ''}/>
-                            <p>
-                                {data.likedIds?.length}
-                            </p>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
